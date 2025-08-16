@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 
@@ -57,21 +57,33 @@ const App = () => (
 
 const Header = () => {
   return (
-    <header className="header footer">
+    <header className="header">
       <h1>Fast React Pizza Co.</h1>
     </header>
   );
 };
 
 const Menu = () => {
+  const pizzas = pizzaData;
+  const numberOfPizzas = pizzas.length;
   return (
     <main className="menu">
       <h2>Our menu</h2>
-      <ul className="pizzas">
-        {pizzaData.map((pizza) => (
-          <Pizza pizzaObj={pizza} key={pizza.name} />
-        ))}
-      </ul>
+      {numberOfPizzas > 0 ? (
+        <>
+          <p>
+            Authentic Italian cusine. 6 creative dishes to choose from. All from
+            our stone oven, all organi, all delicious.
+          </p>
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We're still working on our menu. Please come back later :)</p>
+      )}
     </main>
   );
 };
@@ -84,19 +96,29 @@ const Footer = () => {
   console.log(isOpen);
   return (
     <footer className="footer">
-      {new Date().toLocaleTimeString()}. We're currently open
+      {isOpen ? (
+        <div className="order">
+          We're open until {closeHour}:00. Come visit us or Order online
+          <button className="btn">Order</button>
+        </div>
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00
+        </p>
+      )}
     </footer>
   );
 };
 
-const Pizza = (props) => {
+const Pizza = ({ pizzaObj }) => {
+  // const pizzaStyle = pizzaObj.soldOut ? "pizza sold-out" : "pizza";
   return (
-    <li className="pizza">
-      <img src={props.pizzaObj.photoName} alt={props.pizzaObj.name} />
+    <li className={`pizza ${pizzaObj.soldOut ? "sold-out" : ""}`}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
       <div>
-        <h3>{props.pizzaObj.name}</h3>
-        <p>{props.pizzaObj.ingredients}</p>
-        <span>{props.pizzaObj.price}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <span>{pizzaObj.soldOut ? "SOLD OUT" : pizzaObj.price}</span>
       </div>
     </li>
   );
